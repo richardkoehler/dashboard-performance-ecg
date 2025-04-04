@@ -1,24 +1,26 @@
-from sqlalchemy import Column, Integer, String, Float, DateTime, JSON
-from sqlalchemy.ext.declarative import declarative_base
+from datetime import datetime, timezone
 
-Base = declarative_base()
+from sqlalchemy import Column, DateTime, Float, Integer, String
+
+from app.database import Base
+
 
 class ModelPerformance(Base):
     __tablename__ = "model_performances"
 
     id = Column(Integer, primary_key=True, index=True)
     model_name = Column(String, index=True)
-    upload_time = Column(DateTime)
+    upload_time = Column(DateTime, default=lambda: datetime.now(timezone.utc))
     performance_score = Column(Float)
-    model_metadata = Column(JSON)  # Changed from metadata to model_metadata
+    model_info = Column(String)  # Changed from metadata to model_info
     file_path = Column(String)
-    
-    def to_dict(self):
+
+    def to_dict(self) -> dict[str, str | float | int | datetime]:
         return {
             "id": self.id,
             "model_name": self.model_name,
             "upload_time": self.upload_time.isoformat(),
             "performance_score": self.performance_score,
-            "metadata": self.model_metadata,  # Keep the dict key as metadata for API consistency
-            "file_path": self.file_path
+            "metadata": self.model_info,
+            "file_path": self.file_path,
         }
