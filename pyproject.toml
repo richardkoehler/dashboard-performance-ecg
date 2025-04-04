@@ -1,0 +1,25 @@
+[project]
+name = "dashboard-performance-ecg"
+version = "0.1.0"
+description = "FastAPI-based dashboard for tracking machine learning model performance"
+readme = "README.md"
+requires-python = ">=3.13"
+license = {file = "LICENSE"}
+authors = [
+    {name = "Richard M. Köhler"}
+]
+dependencies = [
+    "aiosqlite>=0.21.0",
+    "fastapi>=0.115.12",
+    "importlib-metadata>=8.6.1",
+    "jinja2>=3.1.6",
+    "pandas>=2.2.3",
+    "python-dotenv>=1.1.0",
+    "python-multipart>=0.0.20",
+    "sqlalchemy>=2.0.40",
+    "uvicorn>=0.34.0",
+]
+
+[project.urls]
+"Homepage" = "https://github.com/richardkoehler/dashboard-performance-ecg"
+"Bug Tracker" = "https://github.com/richardkoehler/dashboard-performance-ecg/issues"
