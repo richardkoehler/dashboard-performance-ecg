@@ -1,7 +1,7 @@
 [project]
 name = "dashboard-performance-ecg"
 version = "0.1.0"
-description = "FastAPI-based dashboard for tracking machine learning model performance"
+description = "A dashboard for tracking machine learning model performance."
 readme = "README.md"
 requires-python = ">=3.13"
 license = {file = "LICENSE"}

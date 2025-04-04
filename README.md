@@ -1,6 +1,6 @@
 # ML Model Performance Dashboard
 
-A FastAPI-based dashboard for tracking machine learning model performance over time.
+A dashboard for tracking machine learning model performance over time.
 
 ## Features
 
