@@ -1,7 +1,10 @@
-import importlib
+import importlib.util
+from collections.abc import AsyncGenerator
+from contextlib import asynccontextmanager
 from datetime import datetime
 from pathlib import Path
 
+import pandas as pd
 from fastapi import Depends, FastAPI, File, Form, Request, UploadFile
 from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
@@ -9,10 +12,17 @@ from fastapi.templating import Jinja2Templates
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.database import get_db, init_db
+from app.database import SessionDep, get_db, init_db
 from app.models import ModelPerformance
 
-app = FastAPI(debug=True)
+
+@asynccontextmanager
+async def lifespan(app: FastAPI) -> AsyncGenerator[None]:
+    await init_db()
+    yield
+
+
+app = FastAPI(lifespan=lifespan)
 
 # Get the current directory
 CURRENT_DIR = Path(__file__).parent
@@ -26,13 +36,8 @@ app.mount("/static", StaticFiles(directory=str(STATIC_DIR)), name="static")
 templates = Jinja2Templates(directory=str(TEMPLATES_DIR))
 
 
-@app.on_event("startup")
-async def startup_event() -> None:
-    await init_db()
-
-
 @app.get("/", response_class=HTMLResponse)
-async def index(request: Request, db: AsyncSession = Depends(get_db)) -> HTMLResponse:
+async def index(request: Request, db: SessionDep) -> HTMLResponse:
     result = await db.execute(
         select(ModelPerformance).order_by(ModelPerformance.upload_time.desc())
     )
@@ -40,6 +45,11 @@ async def index(request: Request, db: AsyncSession = Depends(get_db)) -> HTMLRes
     return templates.TemplateResponse(
         "index.html", {"request": request, "performances": performances}
     )
+
+
+def get_sample_data() -> pd.DataFrame:
+    # Replace this with your actual data loading logic
+    return pd.DataFrame({"feature": range(100), "target": range(100)})
 
 
 @app.post("/upload")
